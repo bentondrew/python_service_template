@@ -11,10 +11,11 @@ FROM nonroot AS python-tools
 RUN pip3 install --upgrade pip build setuptools twine wheel
 
 FROM python-tools AS app-install
+ARG PYTHON_PACKAGE_VERSION=1.0.0+dockerfiledefault
 COPY --chown=python_user:python_user ./ ./code 
 RUN cd code && \
     python3 -m build && \
-    pip3 install dist/mypackage-0.0.1-py3-none-any.whl && \
+    pip3 install dist/mypackage-${PYTHON_PACKAGE_VERSION}-py3-none-any.whl && \
     cd .. && \
     rm -rf code
 
