@@ -5,9 +5,18 @@ RUN groupadd python_user && \
     useradd -mr -g python_user -s /sbin/nologin python_user
 USER python_user
 WORKDIR /home/python_user
+ENV PATH="/home/python_user/.local/bin/:${PATH}"
 
 FROM nonroot AS python-tools
-RUN pip3 install --upgrade pip setuptools twine wheel
+RUN pip3 install --upgrade pip build setuptools twine wheel
 
-FROM python-tools AS deps-install
-RUN --mount=type=bind,source=./requirements.txt,target=./requirements.txt pip3 install -r requirements.txt
+FROM python-tools AS app-install
+COPY --chown=python_user:python_user ./ ./code 
+RUN cd code && \
+    python3 -m build && \
+    pip3 install dist/mypackage-0.0.1-py3-none-any.whl && \
+    cd .. && \
+    rm -rf code
+
+FROM app-install AS deploy
+ENTRYPOINT ["mypackage"]

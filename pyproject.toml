@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mypackage"
+version = "0.0.1"
+description = "Python service template"
+dependencies = []
+requires-python = ">=3.10,<3.11"
+
+[project.scripts]
+mypackage = "mypackage.hello_world:say_hi"
+
+[tool.setuptools.packages]
+find = {}
